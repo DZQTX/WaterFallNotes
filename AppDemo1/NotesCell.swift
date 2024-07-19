@@ -5,22 +5,23 @@
 //  Created by 夜凛(丁志强) on 2024/7/4.
 //
 
-import Masonry
+import Pipe
+import PipeCore
 import SDWebImage
 import SnapKit
 import UIKit
 
-class NotesCell: UICollectionViewCell {
+public class NotesCell: UICollectionViewCell, CellReusable {
     // MARK: Lifecycle
 
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        contentView.addSubview(imageView)
-        contentView.addSubview(titleLabel)
-        contentView.addSubview(userAvatarImageView)
-        contentView.addSubview(likesLabel)
-        contentView.addSubview(likesImage)
+        addSubview(imageView)
+        addSubview(titleLabel)
+        addSubview(userAvatarImageView)
+        addSubview(likesLabel)
+        addSubview(likesImage)
 
         // 设置基本布局
         imageView.snp.makeConstraints { make in
@@ -65,19 +66,24 @@ class NotesCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
+    // MARK: Public
+
+    override public func prepareForReuse() {
+    }
+
     // MARK: Internal
 
     // var note: NotesModel?
     let imageView = UIImageView()
     let titleLabel = UILabel()
     let userAvatarImageView = UIImageView()
-    let likesLabel = UILabel()
+    var likesLabel = UILabel()
     let likesImage = UIImageView()
 
     func configure(with note: NotesModel) {
-       let imageUrl = "https://i.52112.com/icon/jpg/256/20190424/37588/1788146.jpg"
+        let imageUrl = "https://i.52112.com/icon/jpg/256/20190424/37588/1788146.jpg"
         imageView.sd_setImage(with: URL(string: imageUrl), completed: nil)
-       
+
         if let userMessage = note.userMessage {
             userAvatarImageView.sd_setImage(with: URL(string: userMessage), completed: nil)
         }
@@ -85,5 +91,16 @@ class NotesCell: UICollectionViewCell {
         likesImage.sd_setImage(with: URL(string: likesUrl), completed: nil)
         titleLabel.text = note.tittle
         likesLabel.text = "\(note.likes) likes"
+    }
+
+    func configure() {
+        let imageUrl = "https://i.52112.com/icon/jpg/256/20201130/100653/4094731.jpg"
+        imageView.sd_setImage(with: URL(string: imageUrl), completed: nil)
+        let userMessage = "https://i.52112.com/icon/jpg/256/20201130/100653/4094731.jpg"
+        userAvatarImageView.sd_setImage(with: URL(string: userMessage), completed: nil)
+        let likesUrl = "https://i.52112.com/icon/jpg/256/20201130/100653/4094731.jpg"
+        likesImage.sd_setImage(with: URL(string: likesUrl), completed: nil)
+        titleLabel.text = "次把你的伤口就变成v就看淡才离开；还记得v哪里开始的反馈v今年都i好"
+        likesLabel.text = "likes"
     }
 }

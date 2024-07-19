@@ -9,8 +9,9 @@ import Foundation
 import YYModel
 
 @objcMembers
-public class NotesModel: NSObject, Codable{
-    public var id: String?
+public class NotesModel: NSObject, Codable,Identifiable{
+    
+    public var id: UUID = UUID()
     public var imageUrl: String?
     public var tittle: String?
     public var userMessage: String?

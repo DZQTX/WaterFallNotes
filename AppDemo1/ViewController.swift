@@ -6,34 +6,38 @@
 //
 
 import AFNetworking
+import Pipe
+import PipeCore
 import UIKit
 import YYModel
 
 // MARK: - ViewController
 
-class ViewController: UIViewController {
-    // MARK: Internal
+public class ViewController: UIViewController {
+    // MARK: Public
 
-    var notes = [NotesModel]()
-
-    override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
 
         view.addSubview(collectionView)
         collectionView.snp.makeConstraints { make in
             make.edges.equalToSuperview().inset(2)
         }
-        //添加手势
+        // 添加手势
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
         collectionView.addGestureRecognizer(longPress)
-        
-        self.title = "瀑布流笔记Demo"
-        if let navigationBar = navigationController?.navigationBar{
-            navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black,
-                                                 NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 18)]
+
+        title = "瀑布流笔记Demo"
+        if let navigationBar = navigationController?.navigationBar {
+            navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black, NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 18)]
         }
+
         fetchNotes()
     }
+
+    // MARK: Internal
+
+    var notes = [NotesModel]()
 
     func fetchNotes() {
         let manager = AFHTTPSessionManager()
@@ -51,6 +55,9 @@ class ViewController: UIViewController {
                 if let posts = NSArray.yy_modelArray(with: NotesModel.self, json: items) as? [NotesModel] {
                     self?.notes = posts
                     self?.collectionView.reloadData()
+                    guard let self = self else {
+                        return
+                    }
                 }
             }
         }) { (_: URLSessionDataTask?, error: Error) in
@@ -58,13 +65,13 @@ class ViewController: UIViewController {
             print("Error: \(error)")
         }
     }
-    
-    //处理长按事件
+
+    // 处理长按事件
     @objc func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
         if gesture.state == .began {
             let point = gesture.location(in: collectionView)
             if let indexPath = collectionView.indexPathForItem(at: point) {
-                showToast(message: "你长按了第 \(indexPath.row + 1) 个item",at: point)
+                showToast(message: "你长按了第 \(indexPath.row + 1) 个item", at: point)
             }
         }
     }
@@ -111,11 +118,11 @@ class ViewController: UIViewController {
 // MARK: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout
 
 extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return notes.count
     }
 
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: NotesCell.self), for: indexPath)
         if let cell = cell as? NotesCell {
             cell.configure(with: notes[indexPath.row])
@@ -123,13 +130,13 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
         return cell
     }
 
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let detail = NotesDetailViewController()
         detail.itemIndex = indexPath.row
         navigationController?.pushViewController(detail, animated: false)
     }
 
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let spacing: CGFloat = 14
         let width = (UIScreen.main.bounds.width - spacing) / 2
         let height = (UIScreen.main.bounds.height - spacing) / 2.5
@@ -140,12 +147,29 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource, 
 // MARK: - NotesDetailViewController
 
 // 显示cell详细信息
-class NotesDetailViewController: UIViewController {
-    var itemIndex: Int?
-
-    override func viewDidLoad() {
+public class NotesDetailViewController: UIViewController{
+   
+    override public func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+
+        UIViewController.build {
+            @PackageWrapper var list = SlotListController.build {
+                Section {
+                    MCell.build.header(align: .points(20))
+                    ForEach(0 ..< 5) {
+                        NotesPageController.build.adapter(String($0))
+                    }
+                }
+            }
+            list.build.list().stretch()
+        }.on(.interfaceLoaded) { ei in
+            ei.view.backgroundColor = .white
+            ei.viewController.title = "Pipe List"
+            ei.viewController.edgesForExtendedLayout = []
+            let items = ei[capable: NSObjectProtocol.self]
+        }.push()
+
         let label = UILabel()
         if let index = itemIndex {
             label.text = "你点击了第 \(index) 个Item "
@@ -156,4 +180,8 @@ class NotesDetailViewController: UIViewController {
             view.addSubview(label)
         }
     }
+
+    // MARK: Internal
+
+    var itemIndex: Int?
 }

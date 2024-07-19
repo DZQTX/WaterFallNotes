@@ -18,18 +18,35 @@ PODS:
     - LookinServer/Core (= 1.2.8)
   - LookinServer/Core (1.2.8)
   - Masonry (1.1.0)
+  - Pipe/cocoa (0.11.2.4):
+    - PipeCore
+    - SnapKit
+  - Pipe/CollectionLayouts (0.11.2.4):
+    - Pipe/cocoa
+    - XYCollectionViewLayouts
+  - Pipe/PageController (0.11.2.4):
+    - Pipe/cocoa
+    - XYPageViewController
+  - PipeCore (0.11.3)
   - SDWebImage (5.19.4):
     - SDWebImage/Core (= 5.19.4)
   - SDWebImage/Core (5.19.4)
   - SnapKit (5.6.0)
+  - XYCollectionViewLayouts (0.0.4)
+  - XYPageViewController (0.1.19)
   - YYModel (1.0.4)
 
 DEPENDENCIES:
   - AFNetworking
   - LookinServer
   - Masonry
+  - Pipe/CollectionLayouts (from `./`)
+  - Pipe/PageController (from `./`)
+  - PipeCore (from `./`)
   - SDWebImage
   - SnapKit
+  - "XYCollectionViewLayouts (from `git@code.devops.xiaohongshu.com:iOS/XYCollectionViewLayouts.git`, tag `0.0.11`)"
+  - "XYPageViewController (from `git@code.devops.xiaohongshu.com:iOS/XYPageViewController.git`, branch `merge_interface`)"
   - YYModel
 
 SPEC REPOS:
@@ -41,14 +58,38 @@ SPEC REPOS:
     - SnapKit
     - YYModel
 
+EXTERNAL SOURCES:
+  Pipe:
+    :path: "./"
+  PipeCore:
+    :path: "./"
+  XYCollectionViewLayouts:
+    :git: "git@code.devops.xiaohongshu.com:iOS/XYCollectionViewLayouts.git"
+    :tag: 0.0.11
+  XYPageViewController:
+    :branch: merge_interface
+    :git: "git@code.devops.xiaohongshu.com:iOS/XYPageViewController.git"
+
+CHECKOUT OPTIONS:
+  XYCollectionViewLayouts:
+    :git: "git@code.devops.xiaohongshu.com:iOS/XYCollectionViewLayouts.git"
+    :tag: 0.0.11
+  XYPageViewController:
+    :commit: 354713975ffe10d784ed377018f96e44f0473b6d
+    :git: "git@code.devops.xiaohongshu.com:iOS/XYPageViewController.git"
+
 SPEC CHECKSUMS:
   AFNetworking: 3bd23d814e976cd148d7d44c3ab78017b744cd58
   LookinServer: 1b2b61c6402ae29fa22182d48f5cd067b4e99e80
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
+  Pipe: fc9b17a07b6d73818dac43807b57fd12d8d7b21f
+  PipeCore: 045d778591d0cccbf1a2498ad53bf1daba7d4eac
   SDWebImage: 066c47b573f408f18caa467d71deace7c0f8280d
   SnapKit: e01d52ebb8ddbc333eefe2132acf85c8227d9c25
+  XYCollectionViewLayouts: 573d9e604db93d6a1b0ea624698f82582c697455
+  XYPageViewController: ed8ee0de24d56e15c116a78657dd91a7495b996a
   YYModel: 2a7fdd96aaa4b86a824e26d0c517de8928c04b30
 
-PODFILE CHECKSUM: 45e508bf8c85742db0107cbe61880115c0be9ee3
+PODFILE CHECKSUM: 7ce0916c450877362b034e22ea8877f4a3b01304
 
 COCOAPODS: 1.15.2

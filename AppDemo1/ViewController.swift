@@ -45,7 +45,7 @@ public class ViewController: UIViewController {
         manager.requestSerializer = AFHTTPRequestSerializer()
         // 设置响应序列化器
         manager.responseSerializer.acceptableContentTypes = Set(["application/json", "text/json", "text/javascript", "text/html"])
-        manager.get("https://edith.xiaohongshu.com/myNote", parameters: nil, headers: nil, progress: nil, success: { [weak self] (_: URLSessionDataTask, responseObject: Any?) in
+        manager.get("Mock数据", parameters: nil, headers: nil, progress: nil, success: { [weak self] (_: URLSessionDataTask, responseObject: Any?) in
 
             // 请求成功，处理响应数据
             if let responseData = responseObject as? [String: Any], let items = responseData["items"] as? [Any] {

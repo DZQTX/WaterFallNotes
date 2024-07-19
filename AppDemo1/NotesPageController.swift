@@ -10,6 +10,42 @@ import Pipe
 import PipeCore
 import UIKit
 
+// MARK: - NotesPageController
+
+public class NotesPageController: SectionListController, CollectionFlowLayoutable {
+    override public func interfaceDidLoad() {
+        super.interfaceDidLoad()
+        reload {
+            Section {
+                MCell.build.header(align: .points(20))
+                ForEach(0 ..< 10) {
+                    NotesPageCellController.build.adapter(String($0))
+                }
+            }
+        }
+    }
+
+    override public func interfaceDidMounted() {
+        super.interfaceDidMounted()
+//        NotesPageLayout.link(to: self, as: UICollectionViewDelegateFlowLayout.self)
+//        // 设置代理
+//        let collectionView = scrollView as? UICollectionView
+//        collectionView?.delegate = self[bridge: UICollectionViewDelegateFlowLayout.self]
+        // collectionView?.reloadData()
+//
+    }
+
+    public func sizeForItem(at indexPath: IndexPath) -> CGSize {
+        let W = UIScreen.main.bounds.width / 2.1
+        let H = UIScreen.main.bounds.height / 2.5
+        return CGSize(width: W, height: H)
+    }
+    public func insetForSection(at index: Int) -> UIEdgeInsets{
+        return UIEdgeInsets(top: 0, left: 5, bottom: 5, right: 5)
+    }
+    
+}
+
 // MARK: - MCell
 
 public class MCell: UILabel, CellReusable {
@@ -31,22 +67,13 @@ public class MCell: UILabel, CellReusable {
     }
 }
 
-// MARK: - MCellController
+// MARK: - NotesPageCellController
 
-public class NotesPageController: CellController<NotesCell>, Manipulatable, CollectionViewDelegate {
-    
+public class NotesPageCellController: CellController<NotesCell>, Manipulatable, CollectionViewDelegate {
     public typealias Model = String
-    
-    override public func interfaceDidLoad() {
-        super.interfaceDidLoad()
-        NotesPageLayout.link(to: self, as: UICollectionViewDelegateFlowLayout.self)
-        //设置代理
-     let collectionView = self.scrollView as? UICollectionView
-        collectionView?.delegate = self[bridge: UICollectionViewDelegateFlowLayout.self]
-    }
 
     override public var alignDimension: ListDimension {
-        .ratios(1)//占cell数
+        .ratios(1) // 占cell数
     }
 
     override public var crossDimension: ListDimension {
@@ -61,13 +88,12 @@ public class NotesPageController: CellController<NotesCell>, Manipulatable, Coll
         super.modelDidUpdate()
     }
 
-    public override func shouldBind(to view: NotesCell) {
+    override public func shouldBind(to view: NotesCell) {
         view.backgroundColor = .white
         view.configure()
         view.likesLabel.text = model
-        let collectionView = self.scrollView as? UICollectionView
+        let collectionView = scrollView as? UICollectionView
         collectionView?.reloadData()
-        
     }
 
     override public func willFullDisplay(cell: any CellInterface) {
@@ -85,6 +111,8 @@ public class NotesPageController: CellController<NotesCell>, Manipulatable, Coll
     }
 }
 
+// MARK: - NotesPageController + Capable
+
 extension NotesPageController: Capable {
     public var CapableKeys: [CapableKey] {
         NSObjectProtocol.self
@@ -94,19 +122,18 @@ extension NotesPageController: Capable {
 // MARK: - String + JustBuildable
 
 extension String: JustBuildable {
-    public typealias EI = NotesPageController
+    public typealias EI = NotesPageCellController
     public func build() -> Packable {
-        NotesPageController.build.adapter(self).build()
+        NotesPageCellController.build.adapter(self).build()
     }
 }
 
-class NotesPageLayout: ObjcProtocolBridge<NotesPageController>, UICollectionViewDelegateFlowLayout{
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let W = collectionView.frame.width / 2
-        let H = collectionView.frame.height / 2
-        return CGSize(width: W, height: H)
-    }
-    
-    
-}
+// MARK: - NotesPageLayout
+
+//
+// class NotesPageLayout: ObjcProtocolBridge<NotesPageController>, UICollectionViewDelegateFlowLayout {
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+//
+//    }
+//
+// }

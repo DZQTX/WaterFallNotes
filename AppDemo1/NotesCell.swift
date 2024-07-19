@@ -94,7 +94,7 @@ public class NotesCell: UICollectionViewCell, CellReusable {
     }
 
     func configure() {
-        let imageUrl = "https://i.52112.com/icon/jpg/256/20201130/100653/4094731.jpg"
+        let imageUrl = "https://i.52112.com/icon/jpg/256/20190424/37588/1788146.jpg"
         imageView.sd_setImage(with: URL(string: imageUrl), completed: nil)
         let userMessage = "https://i.52112.com/icon/jpg/256/20201130/100653/4094731.jpg"
         userAvatarImageView.sd_setImage(with: URL(string: userMessage), completed: nil)
